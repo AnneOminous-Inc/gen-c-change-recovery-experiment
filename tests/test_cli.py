@@ -96,6 +96,46 @@ class AgentOSCLITests(unittest.TestCase):
             for path in sorted(root.rglob("*")) if path.is_file()
         }
 
+    def preview(self, *options, destination=None):
+        result = self.cli("init", "--dest", destination or self.workspace,
+                          "--dry-run", "--json", *options)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.stderr, "")
+        # loads rejects extra text or a second JSON document on stdout.
+        plan = json.loads(result.stdout)
+        self.assertEqual(set(plan), {
+            "schema_version", "operation", "kit_version", "dry_run", "writes",
+            "project", "owner", "files",
+        })
+        self.assertIs(type(plan["schema_version"]), int)
+        self.assertEqual(plan["schema_version"], 1)
+        self.assertEqual(plan["operation"], "init")
+        self.assertEqual(plan["kit_version"], __version__)
+        self.assertIs(plan["dry_run"], True)
+        self.assertIs(plan["writes"], False)
+        self.assertIsInstance(plan["files"], list)
+        self.assertTrue(plan["files"])
+        paths = []
+        for item in plan["files"]:
+            self.assertEqual(set(item), {"path", "bytes"})
+            self.assertIsInstance(item["path"], str)
+            self.assertIs(type(item["bytes"]), int)
+            self.assertGreaterEqual(item["bytes"], 0)
+            path = item["path"]
+            self.assertNotIn("\\", path)
+            self.assertNotIn(":", path)
+            self.assertTrue(all(part not in ("", ".", "..") and
+                                not part.endswith((".", " "))
+                                for part in path.split("/")))
+            self.assertTrue(all(ord(character) >= 32 and ord(character) != 127
+                                for character in path))
+            paths.append(path)
+        self.assertEqual(paths, sorted(paths))
+        self.assertEqual(len(paths), len(set(paths)))
+        self.assertNotIn(str(self.base), result.stdout)
+        self.assertNotIn("## Outcome", result.stdout)
+        return result, plan
+
     def test_version_and_required_destination(self):
         result = self.cli("--version")
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -171,6 +211,85 @@ class AgentOSCLITests(unittest.TestCase):
         result = self.cli("init", "--dest", self.workspace, "--dry-run")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(list(self.workspace.iterdir()), [])
+
+    def test_json_preview_matches_actual_utf8_files_without_creating_destination(self):
+        options = ("--demo", "--project", "Café 简报", "--owner", "Zoë 🌱")
+        result, plan = self.preview(*options)
+        self.assertEqual(plan["project"], "Café 简报")
+        self.assertEqual(plan["owner"], "Zoë 🌱")
+        self.assertFalse(self.workspace.exists())
+        self.assertNotIn(self.workspace.name, result.stdout)
+        actual = self.base / "created files"
+        created = self.cli("init", "--dest", actual, *options)
+        self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+        expected = []
+        for path in actual.rglob("*"):
+            if path.is_file():
+                content = path.read_bytes()
+                content.decode("utf-8")
+                expected.append({"path": path.relative_to(actual).as_posix(),
+                                 "bytes": len(content)})
+        self.assertEqual(plan["files"], sorted(expected, key=lambda item: item["path"]))
+
+    def test_json_preview_is_deterministic_for_default_and_demo_and_empty_destination(self):
+        self.workspace.mkdir()
+        for options, project, owner in (
+            ((), "[TODO] Project name", "[TODO] Accountable owner"),
+            (("--demo",), "Pocket Field Notes", "Demo Operator"),
+        ):
+            with self.subTest(options=options):
+                first, plan = self.preview(*options)
+                second, _ = self.preview(*options)
+                self.assertEqual(first.stdout, second.stdout)
+                self.assertEqual((plan["project"], plan["owner"]), (project, owner))
+                self.assertEqual(list(self.workspace.iterdir()), [])
+
+    def test_json_init_requires_dry_run_and_never_writes(self):
+        for existing in (False, True):
+            with self.subTest(existing=existing):
+                if existing:
+                    self.workspace.mkdir()
+                result = self.cli("init", "--dest", self.workspace, "--json",
+                                  "--project", "Valid project", "--owner", "Operator")
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("--dry-run", result.stderr)
+                self.assertEqual(self.workspace.exists(), existing)
+                if existing:
+                    self.assertEqual(list(self.workspace.iterdir()), [])
+
+    def test_json_preview_rejects_unsafe_destination_and_invalid_text_without_writes(self):
+        occupied = self.base / "occupied"
+        occupied.mkdir()
+        sentinel = occupied / "sentinel.txt"
+        sentinel.write_bytes(b"preserve this fixture\n")
+        empty = self.base / "empty"
+        empty.mkdir()
+        alias = self.base / "alias"
+        alias.symlink_to(empty, target_is_directory=True)
+        cases = [
+            (occupied, (), "occupied"), (alias, (), "symlink"),
+            (alias / "child", (), "symlink"),
+            (str(empty) + "/../new", (), "traversal"),
+            (self.base / "missing-parent" / "new", (), "parent"),
+        ]
+        for flag in ("--project", "--owner"):
+            for value in ("", "invalid\ntext", "x" * 201):
+                cases.append((self.workspace, (flag, value), flag[2:]))
+        before = self.snapshot(self.base)
+        for target, options, message in cases:
+            with self.subTest(target=target.name if isinstance(target, Path) else "traversal",
+                              options=options):
+                result = self.cli("init", "--dest", target, "--dry-run", "--json", *options)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn(message, result.stderr.lower())
+                self.assertNotIn("unrecognized arguments", result.stderr)
+                self.assertEqual(self.snapshot(self.base), before)
+                self.assertFalse(self.workspace.exists())
+        self.assertEqual(sentinel.read_bytes(), b"preserve this fixture\n")
+        self.assertEqual(list(empty.iterdir()), [])
+        self.assertFalse((self.base / "missing-parent").exists())
 
     def test_empty_directory_and_relative_unicode_destination(self):
         destination = self.base / "solo operator 简报"
@@ -505,6 +624,82 @@ class AgentOSCLITests(unittest.TestCase):
         brief = self.workspace / self.read_json("agentos.json")["documents"]["brief"]
         brief.write_bytes(b"\xff\xfe")
         self.invalid()
+
+    def test_canonically_equivalent_unicode_document_names_are_not_unique(self):
+        self.init()
+        config = self.read_json("agentos.json")
+        config["documents"]["brief"] = "Café.md"
+        config["documents"]["handoff"] = "Cafe\u0301.md"
+        self.write_json("agentos.json", config)
+        report = self.invalid()
+        self.assertTrue(any(issue["location"] == "agentos.json.documents" and
+                            "unique" in issue["message"] for issue in report["issues"]), report)
+
+    def test_full_casefold_unicode_document_names_are_not_unique(self):
+        self.init()
+        config = self.read_json("agentos.json")
+        config["documents"]["brief"] = "Straße.md"
+        config["documents"]["handoff"] = "STRASSE.md"
+        self.write_json("agentos.json", config)
+        report = self.invalid()
+        self.assertTrue(any(issue["location"] == "agentos.json.documents" and
+                            "unique" in issue["message"] for issue in report["issues"]), report)
+
+    def test_equivalent_unicode_document_ancestors_are_rejected_in_either_order(self):
+        self.init()
+        original = self.read_json("agentos.json")
+        for parent, child in (("Café", "Cafe\u0301/actions.json"),
+                              ("Straße", "STRASSE/actions.json"),
+                              ("\u0390", "\u03aa\u0301/actions.json")):
+            for brief, actions in ((parent, child), (child, parent)):
+                with self.subTest(brief=brief, actions=actions):
+                    config = json.loads(json.dumps(original))
+                    config["documents"]["brief"] = brief
+                    config["documents"]["actions"] = actions
+                    self.write_json("agentos.json", config)
+                    report = self.invalid()
+                    self.assertTrue(any(issue["location"] == "agentos.json.documents" and
+                                        "ancestor" in issue["message"]
+                                        for issue in report["issues"]), report)
+
+    def test_casefold_output_canonical_aliases_are_rejected_before_document_reads(self):
+        self.init()
+        config = self.read_json("agentos.json")
+        names = ("\u0390.md", "\u03aa\u0301.md")
+        combined = ((self.workspace / config["documents"]["brief"]).read_bytes()
+                    + b"\n" + (self.workspace / config["documents"]["handoff"]).read_bytes())
+        # Both documents can satisfy their section checks, so a missing-file
+        # error cannot hide an alias guard failure on any filesystem.
+        for name in names:
+            (self.workspace / name).write_bytes(combined)
+        config["documents"]["brief"], config["documents"]["handoff"] = names
+        self.write_json("agentos.json", config)
+        before = self.snapshot(self.workspace)
+        report = self.invalid()
+        self.assertTrue(any(issue["location"] == "agentos.json.documents" and
+                            "unique" in issue["message"] for issue in report["issues"]), report)
+        self.assertEqual(self.snapshot(self.workspace), before)
+
+    def test_distinct_unicode_document_paths_pass_read_only_structure_checks(self):
+        self.init()
+        config = self.read_json("agentos.json")
+        names = {
+            "brief": "简报.md", "actions": "Élan.json", "decisions": "Über.json",
+            "corrections": "東京.json", "handoff": "Σημειώσεις.md", "recovery": "Résumé.md",
+        }
+        for role, name in names.items():
+            (self.workspace / name).write_bytes(
+                (self.workspace / config["documents"][role]).read_bytes()
+            )
+            config["documents"][role] = name
+        self.write_json("agentos.json", config)
+        before = self.snapshot(self.workspace)
+        first, report = self.report()
+        second, _ = self.report()
+        self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+        self.assertEqual(report["structure_status"], "passed")
+        self.assertEqual(first.stdout, second.stdout)
+        self.assertEqual(self.snapshot(self.workspace), before)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-Gen C Change and Recovery Experiment 0.2.1 — selected actual output
+Gen C Change and Recovery Experiment 0.2.2 — selected actual output
 Full scripted output: BEGINNER_EXERCISE_RESULTS.txt
 
 Application tests after the deliberate bug:

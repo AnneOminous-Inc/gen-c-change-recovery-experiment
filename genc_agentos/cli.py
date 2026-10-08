@@ -41,6 +41,7 @@ def parser():
     init.add_argument("--owner", help="person or role responsible for the next action")
     init.add_argument("--demo", action="store_true", help="use fictional Pocket Field Notes example")
     init.add_argument("--dry-run", action="store_true", help="validate the destination and show the plan without writing")
+    init.add_argument("--json", action="store_true", help="print a machine-readable preview; requires --dry-run")
     validate = commands.add_parser("check", help="check workspace record structure; application tests are separate")
     validate.add_argument("--dest", required=True, metavar="PATH")
     validate.add_argument("--json", action="store_true", help="print a portable machine-readable report")
@@ -50,6 +51,8 @@ def parser():
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command == "init" and args.json and not args.dry_run:
+            raise WorkspaceError("init --json requires --dry-run; no files were written")
         root = destination(args.dest, must_exist=args.command == "check")
         if args.command == "init":
             project = args.project if args.project is not None else "Pocket Field Notes" if args.demo else "[TODO] Project name"
@@ -58,6 +61,15 @@ def main(argv=None):
                 if not value.strip() or any(unicodedata.category(c) in ("Cc", "Cs") for c in value) or len(value) > 200:
                     raise WorkspaceError(name + " must be 1–200 characters without control characters")
             files = build_files(project, owner, args.demo)
+            if args.json:
+                plan = {
+                    "schema_version": 1, "operation": "init", "kit_version": __version__,
+                    "dry_run": True, "writes": False, "project": project, "owner": owner,
+                    "files": [{"path": name, "bytes": len(content.encode("utf-8"))}
+                              for name, content in sorted(files.items())],
+                }
+                print(json.dumps(plan, ensure_ascii=True, indent=2))
+                return 0
             print("Gen C AgentOS " + __version__)
             print("Dry run — no files written." if args.dry_run else "Creating opt-in workspace.")
             for name in files:

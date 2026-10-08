@@ -1,6 +1,6 @@
 # Gen C Change and Recovery Experiment
 
-An experimental beginner change-and-recovery exercise, version **0.2.1**.
+An experimental beginner change-and-recovery exercise, version **0.2.2**.
 Run a tiny fictional word counter, keep a useful help-text edit, introduce one
 deliberate bug, then repair only the broken line and verify the result.
 The same file contains both edits, so replacing it with an older backup would
@@ -31,13 +31,13 @@ portable path behavior is tested on macOS.
 
 ## Download or run from source
 
-Get the ZIP from the [v0.2.1 release](https://github.com/AnneOminous-Inc/gen-c-change-recovery-experiment/releases/tag/v0.2.1)
+Get the ZIP from the [v0.2.2 release](https://github.com/AnneOminous-Inc/gen-c-change-recovery-experiment/releases/tag/v0.2.2)
 and extract it with your file manager. No package installation is required.
 
 If you already have Git, the source alternative is:
 
 ```sh
-git clone --branch v0.2.1 --single-branch https://github.com/AnneOminous-Inc/gen-c-change-recovery-experiment.git
+git clone --branch v0.2.2 --single-branch https://github.com/AnneOminous-Inc/gen-c-change-recovery-experiment.git
 cd gen-c-change-recovery-experiment
 python3 -m genc_agentos --version
 python3 practice/word-counter/counter.py "Small steps make progress"
@@ -45,7 +45,7 @@ python3 -m unittest discover -s practice/word-counter -v
 ```
 
 Git refuses a nonempty clone destination. In source usage, replace
-`python3 genc-agentos-0.2.1.pyz` below with `python3 -m genc_agentos`.
+`python3 genc-agentos-0.2.2.pyz` below with `python3 -m genc_agentos`.
 Cloning/downloading uses the network; running the tool and exercise does not.
 
 ## Try the working project
@@ -72,7 +72,7 @@ databases, external actions, or edits elsewhere.
 For optional repeatable developer evidence, run:
 
 ```sh
-python3 scripts/verify_beginner_exercise.py --app ./genc-agentos-0.2.1.pyz --record ./evidence-run.txt
+python3 scripts/verify_beginner_exercise.py --app ./genc-agentos-0.2.2.pyz --record ./evidence-run.txt
 ```
 
 The runner copies allowlisted practice files into a fresh temporary directory
@@ -86,14 +86,14 @@ friction and the remaining evidence gap.
 From the extracted release folder:
 
 ```sh
-python3 genc-agentos-0.2.1.pyz --version
-python3 genc-agentos-0.2.1.pyz init --dest ./workspace --demo --dry-run
-python3 genc-agentos-0.2.1.pyz init --dest ./workspace --demo
-python3 genc-agentos-0.2.1.pyz check --dest ./workspace
-python3 genc-agentos-0.2.1.pyz check --dest ./workspace --json
+python3 genc-agentos-0.2.2.pyz --version
+python3 genc-agentos-0.2.2.pyz init --dest ./workspace --demo --dry-run
+python3 genc-agentos-0.2.2.pyz init --dest ./workspace --demo
+python3 genc-agentos-0.2.2.pyz check --dest ./workspace
+python3 genc-agentos-0.2.2.pyz check --dest ./workspace --json
 ```
 
-Expect version `0.2.1`, a preview stating `Dry run — no files written.`, then
+Expect version `0.2.2`, a preview stating `Dry run — no files written.`, then
 `Workspace structure checks passed.` for the demo records. The JSON reports
 `structure_status: "passed"`, `verification_scope: "workspace_structure"`, and
 `application_tests: "not_run"`. These describe record format and local paths,
@@ -111,16 +111,16 @@ unimplemented note app. The actual runnable word counter is separately under
 ## Optional copy-install and your own records
 
 No installation is required. To keep the tool elsewhere, use your file manager
-to copy only `genc-agentos-0.2.1.pyz` into a directory you choose. Decline an
+to copy only `genc-agentos-0.2.2.pyz` into a directory you choose. Decline an
 overwrite prompt. Run it with Python using its quoted path; no PATH or shell
 startup change is needed. The practice and guide stay in the extracted release.
 
 From the extracted folder, a new workspace can be previewed and created with:
 
 ```sh
-python3 genc-agentos-0.2.1.pyz init --dest ./my-project-workspace --project "My Project" --owner "Project Owner" --dry-run
-python3 genc-agentos-0.2.1.pyz init --dest ./my-project-workspace --project "My Project" --owner "Project Owner"
-python3 genc-agentos-0.2.1.pyz check --dest ./my-project-workspace
+python3 genc-agentos-0.2.2.pyz init --dest ./my-project-workspace --project "My Project" --owner "Project Owner" --dry-run
+python3 genc-agentos-0.2.2.pyz init --dest ./my-project-workspace --project "My Project" --owner "Project Owner"
+python3 genc-agentos-0.2.2.pyz check --dest ./my-project-workspace
 ```
 
 Destinations are explicit. Use a new directory whose real parent already
@@ -130,6 +130,20 @@ physical path if an ancestor is a system symlink, such as a temporary-directory
 alias. A second `init` refuses the occupied workspace without changing it.
 Repeated `check` calls are read-only and deterministic for identical inputs.
 Dry-run checks the destination and prints a creation plan without writing.
+
+For a machine-readable preview, add `--json` to `init --dry-run`:
+
+```sh
+python3 genc-agentos-0.2.2.pyz init --dest ./my-project-workspace --project "Café Notes" --owner "Project Owner" --dry-run --json
+```
+
+This prints one deterministic JSON object with preview schema version 1,
+operation, kit version, project, owner, `dry_run: true`, `writes: false`, and a
+sorted `files` list of relative paths and UTF-8 byte counts. It omits the
+destination and template contents. `init --json` without `--dry-run` exits 2
+without writing. Destination and text validation still apply. A preview does
+not reserve the destination, authorize work, or guarantee later creation.
+`check --json` remains a separate structure report using report schema version 2.
 
 ## Maintain the records
 
@@ -206,7 +220,7 @@ From a source checkout, the build supplies the packaged app under `dist/`.
 To run the exercise verifier against that app:
 
 ```sh
-python3 scripts/verify_beginner_exercise.py --app ./dist/genc-agentos-0.2.1.pyz --record ./evidence-run.txt
+python3 scripts/verify_beginner_exercise.py --app ./dist/genc-agentos-0.2.2.pyz --record ./evidence-run.txt
 ```
 
 Tests use fixtures and temporary directories. Release files are allowlisted;

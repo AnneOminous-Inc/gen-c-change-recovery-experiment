@@ -1,21 +1,22 @@
 # What this experiment tests, and what remains unknown
 
-Gen C Change and Recovery Experiment v0.2.1 is a scripted local exercise with a
+Gen C Change and Recovery Experiment v0.2.2 is a scripted local exercise with a
 fictional word counter. It is not a human usability study, demand measurement,
 or comparison against an existing agent/checkpoint workflow. The records CLI
 is a secondary structural checker.
 
 ## Evidence status
 
-The **v0.2.1 packaged exercise passed**: 19 commands recorded seven passing
+The **v0.2.2 packaged exercise passed**: 19 commands recorded seven passing
 application tests, four deliberate failures, and seven passing tests after a
 scoped repair. The wanted help edit and operator notes remained intact.
 See `BEGINNER_EXERCISE_RESULTS.txt` for the actual command transcript.
 
-**Full suite: 42 tests passed** in 125.948 seconds on Python 3.9.6 on macOS,
-with exit code 0. The initial aggregate run exceeded its 90-second wrapper
-limit; the completed run used a longer limit. See `TEST_RESULTS.txt` for the
-actual output. No test failures were reported in that completed run.
+**Full suite: 52 tests passed** in 22.290 seconds on Python 3.9.6/macOS,
+with exit code 0. See `TEST_RESULTS.txt` for actual current-tree output.
+The JSON preview matches actual created-file UTF-8 byte counts; Unicode
+regressions cover aliases and ancestor boundaries, including a Greek casefold
+normalization gap found and repaired during review.
 
 | Step | Observed packaged result | What it establishes |
 | --- | --- | --- |

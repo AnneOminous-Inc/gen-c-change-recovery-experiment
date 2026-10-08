@@ -9,7 +9,7 @@ Working directory: .
 $ python3 genc-agentos.pyz init --dest 'records demo 简报' --demo --dry-run
 Expected exit: 0; observed exit: 0
 stdout:
-Gen C AgentOS 0.2.1
+Gen C AgentOS 0.2.2
 Dry run — no files written.
 CREATE  agentos.json
 CREATE  BRIEF.md
@@ -30,7 +30,7 @@ Working directory: .
 $ python3 genc-agentos.pyz init --dest 'records demo 简报' --demo
 Expected exit: 0; observed exit: 0
 stdout:
-Gen C AgentOS 0.2.1
+Gen C AgentOS 0.2.2
 Creating opt-in workspace.
 CREATE  agentos.json
 CREATE  BRIEF.md
@@ -291,7 +291,7 @@ Traceback (most recent call last):
 AssertionError: 1 != 4
 
 ----------------------------------------------------------------------
-Ran 7 tests in 0.014s
+Ran 7 tests in 0.001s
 
 FAILED (failures=4)
 
@@ -383,7 +383,7 @@ test_tabs_and_newlines_separate_words (test_counter.WordCounterTests) ... ok
 test_words_separated_by_single_spaces (test_counter.WordCounterTests) ... ok
 
 ----------------------------------------------------------------------
-Ran 7 tests in 0.002s
+Ran 7 tests in 0.000s
 
 OK
 

@@ -14,7 +14,7 @@ files. The `.pyz` file is the workspace tool. `counter.py` is the practice
 program. They are separate.
 
 Extract the ZIP with your file manager. Open a terminal in the folder containing
-`genc-agentos-0.2.1.pyz`, `practice/`, and `scripts/`. You can use `cd` followed
+`genc-agentos-0.2.2.pyz`, `practice/`, and `scripts/`. You can use `cd` followed
 by the quoted path to that extracted folder to change the terminal's folder.
 On macOS/Linux, `pwd` prints the current folder; in Windows PowerShell,
 `Get-Location` does the same. The terminal must be in the extracted release
@@ -71,17 +71,17 @@ needed.
 The separate workspace tool organizes records. To see its limited scope, run:
 
 ```sh
-python3 genc-agentos-0.2.1.pyz --version
-python3 genc-agentos-0.2.1.pyz init --dest ./workspace --demo --dry-run
+python3 genc-agentos-0.2.2.pyz --version
+python3 genc-agentos-0.2.2.pyz init --dest ./workspace --demo --dry-run
 ```
 
-Expect version `0.2.1` and `Dry run — no files written.` Review the creation
+Expect version `0.2.2` and `Dry run — no files written.` Review the creation
 plan and `./workspace` destination, then run:
 
 ```sh
-python3 genc-agentos-0.2.1.pyz init --dest ./workspace --demo
-python3 genc-agentos-0.2.1.pyz check --dest ./workspace
-python3 genc-agentos-0.2.1.pyz check --dest ./workspace --json
+python3 genc-agentos-0.2.2.pyz init --dest ./workspace --demo
+python3 genc-agentos-0.2.2.pyz check --dest ./workspace
+python3 genc-agentos-0.2.2.pyz check --dest ./workspace --json
 ```
 
 Expect `Workspace structure checks passed.` The JSON identifies
@@ -137,7 +137,7 @@ words. Read the failures and the changed line before recovering.
 If you tried the optional records commands, the workspace tool can still say
 `Workspace structure checks passed.` during the application test failures.
 Intact records cannot establish project behavior. Run project tests separately.
-Check that boundary with `python3 genc-agentos-0.2.1.pyz check --dest ./workspace`.
+Check that boundary with `python3 genc-agentos-0.2.2.pyz check --dest ./workspace`.
 A simple one-space sentence can also still print `Words: 4`; one happy-path
 example does not cover all documented behavior.
 
@@ -180,7 +180,7 @@ For developer proof of the same pass/fail/scoped-repair sequence in a temporary
 folder, optionally run from the extracted release folder:
 
 ```sh
-python3 scripts/verify_beginner_exercise.py --app ./genc-agentos-0.2.1.pyz --record ./evidence-run.txt
+python3 scripts/verify_beginner_exercise.py --app ./genc-agentos-0.2.2.pyz --record ./evidence-run.txt
 ```
 
 The runner uses temporary copies and does not edit your practice file. Its

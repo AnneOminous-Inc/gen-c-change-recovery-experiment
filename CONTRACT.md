@@ -1,4 +1,4 @@
-# Gen C AgentOS records CLI specification — 0.2.1
+# Gen C AgentOS records CLI specification — 0.2.2
 
 The small records CLI supports the Gen C Change and Recovery Experiment.
 It checks workspace structure and local references; it does not run application
@@ -18,8 +18,17 @@ python3 -m genc_agentos check --dest ./workspace --json
 ```
 
 The extracted release replaces `python3 -m genc_agentos` with
-`python3 genc-agentos-0.2.1.pyz`. `init` also accepts `--project NAME` and
+`python3 genc-agentos-0.2.2.pyz`. `init` also accepts `--project NAME` and
 `--owner NAME` instead of `--demo`. Put names containing spaces in quotes.
+
+`init --dry-run --json` prints a JSON-only preview. `init --json` without
+`--dry-run` is refused with exit 2, empty stdout, and an error on stderr;
+it writes nothing. Preview schema version 1 contains exactly `schema_version`,
+`operation` (`"init"`), `kit_version`, `dry_run` (`true`), `writes` (`false`),
+`project`, `owner`, and `files`. Each file entry has `path` (portable relative
+path) and `bytes` (UTF-8 byte count). Entries are sorted by path. No absolute
+destination or template contents are serialized. Destination/text validation
+applies before output. A preview does not reserve or authorize later work.
 
 An explicit destination is required. Init accepts a missing directory whose
 real parent exists, or an existing empty directory. Occupied directories are
@@ -31,7 +40,7 @@ input, filesystem, or schema errors. Project tests have separate results.
 
 ## Source interface
 
-`genc_agentos/templates.py` exposes `VERSION = __version__` (0.2.1) and
+`genc_agentos/templates.py` exposes `VERSION = __version__` (0.2.2) and
 `build_files(project: str, owner: str, demo: bool = False) -> dict[str, str]`.
 Mapping keys are portable relative POSIX paths; values are UTF-8 text. All
 template keys are implementation constants, not user-controlled paths.
@@ -120,7 +129,7 @@ counterexample. Workspace data and reports do not serialize absolute paths.
 
 The [repository](https://github.com/AnneOminous-Inc/gen-c-change-recovery-experiment)
 contains allowlisted original source, templates, tests, practice files, and
-documentation. The v0.2.1 release adds a standalone zipapp and extracted-source
+documentation. The v0.2.2 release adds a standalone zipapp and extracted-source
 ZIP. See [README.md](README.md) for download, source usage, removal, and limits,
 and [LICENSE](LICENSE) for MIT terms. No third-party packages or Python runtime
 are bundled. This experiment does not claim novel tooling, measured human

@@ -97,7 +97,8 @@ def check(root):
         except WorkspaceError as exc:
             error("agentos.json.documents." + role, str(exc))
     names = ["agentos.json"] + list(safe_docs.values())
-    folded = [unicodedata.normalize("NFC", name).casefold() for name in names]
+    # Case folding can introduce combining sequences; normalize its output too.
+    folded = [unicodedata.normalize("NFC", unicodedata.normalize("NFC", name).casefold()) for name in names]
     if len(set(folded)) != len(folded):
         error("agentos.json.documents", "document paths must be unique, including on case-insensitive filesystems")
     for index, name in enumerate(folded):

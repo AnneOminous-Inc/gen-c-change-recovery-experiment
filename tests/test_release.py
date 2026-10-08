@@ -74,6 +74,77 @@ class StandaloneReleaseTests(unittest.TestCase):
                 run("check", "--dest", demo, "--json", expected=2), "invalid"
             )
 
+    def test_packaged_json_preview_matches_created_bytes_and_never_writes(self):
+        with tempfile.TemporaryDirectory(prefix="agentos-packaged-preview-") as temporary:
+            base = Path(temporary).resolve()
+            app = base / "preview tool.pyz"
+            builder.build_zipapp(app)
+            environment = os.environ.copy()
+            environment.pop("PYTHONPATH", None)
+            environment["PYTHONDONTWRITEBYTECODE"] = "1"
+
+            def run(*args, expected=0):
+                result = subprocess.run(
+                    [sys.executable, str(app), *map(str, args)],
+                    cwd=base, env=environment, capture_output=True, text=True, timeout=15,
+                )
+                self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+                self.assertNotIn("Traceback", result.stdout + result.stderr)
+                return result
+
+            missing = base / "do not create 简报"
+            empty = base / "keep empty"
+            empty.mkdir()
+            options = ("--demo", "--project", "Café 简报", "--owner", "Zoë 🌱")
+            preview = run("init", "--dest", missing, "--dry-run", "--json", *options)
+            self.assertEqual(preview.stderr, "")
+            plan = json.loads(preview.stdout)
+            self.assertEqual(set(plan), {
+                "schema_version", "operation", "kit_version", "dry_run", "writes",
+                "project", "owner", "files",
+            })
+            self.assertIs(type(plan["schema_version"]), int)
+            self.assertEqual(plan["schema_version"], 1)
+            self.assertEqual(plan["operation"], "init")
+            self.assertEqual(plan["kit_version"], __version__)
+            self.assertIs(plan["dry_run"], True)
+            self.assertIs(plan["writes"], False)
+            self.assertEqual((plan["project"], plan["owner"]), ("Café 简报", "Zoë 🌱"))
+            self.assertNotIn(str(base), preview.stdout)
+            self.assertNotIn(missing.name, preview.stdout)
+            self.assertNotIn("## Outcome", preview.stdout)
+            self.assertFalse(missing.exists())
+            repeated = run("init", "--dest", empty, "--dry-run", "--json", *options)
+            self.assertEqual(preview.stdout, repeated.stdout)
+            self.assertEqual(list(empty.iterdir()), [])
+
+            actual = base / "actual scaffold"
+            run("init", "--dest", actual, *options)
+            contents = {path.relative_to(actual).as_posix(): path.read_bytes()
+                        for path in actual.rglob("*") if path.is_file()}
+            expected = [{"path": name, "bytes": len(contents[name])} for name in sorted(contents)]
+            self.assertEqual(plan["files"], expected)
+            for item in plan["files"]:
+                self.assertEqual(set(item), {"path", "bytes"})
+                self.assertIs(type(item["bytes"]), int)
+                contents[item["path"]].decode("utf-8")
+                self.assertNotIn("\\", item["path"])
+                self.assertNotIn(":", item["path"])
+                self.assertTrue(all(part not in ("", ".", "..")
+                                    for part in item["path"].split("/")))
+            for destination in (missing, empty):
+                with self.subTest(destination=destination.name):
+                    invalid_mode = run("init", "--dest", destination, "--json",
+                                       *options, expected=2)
+                    self.assertEqual(invalid_mode.stdout, "")
+                    self.assertIn("--dry-run", invalid_mode.stderr)
+            self.assertFalse(missing.exists())
+            self.assertEqual(list(empty.iterdir()), [])
+            occupied = run("init", "--dest", actual, "--dry-run", "--json", expected=2)
+            self.assertEqual(occupied.stdout, "")
+            self.assertEqual(contents, {path.relative_to(actual).as_posix(): path.read_bytes()
+                                        for path in actual.rglob("*") if path.is_file()})
+
     def test_public_zip_contains_only_allowlisted_deliverables_and_license(self):
         excluded = (
             "PUBLIC_REPOSITORY_PLAN.md", "PUBLIC_RELEASE_READINESS.md",

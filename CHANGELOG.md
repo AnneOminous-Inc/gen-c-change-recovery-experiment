@@ -1,5 +1,20 @@
 # Changes
 
+## 0.2.2 — 2026-10-08
+
+Added `init --dry-run --json` so local callers can inspect the planned relative
+paths and UTF-8 byte counts without parsing the human preview. JSON output is
+deterministic, omits destination paths and template contents, and writes
+nothing. `init --json` without `--dry-run` is refused. Existing destination and
+text validation, human preview, and structure-only report behavior remain.
+
+Added Unicode regression coverage for canonical-equivalent paths, full
+casefold aliases, ancestor collisions in both orders, and distinct Unicode
+document paths. Review also exposed Greek aliases whose casefold outputs had
+different normalization; normalizing the folded output now rejects these
+duplicate and ancestor paths before reading documents. These checks are not
+safety guarantees or evidence of human benefit. Dependencies are unchanged.
+
 ## 0.2.1 — 2026-10-08
 
 The workspace checker now says **Workspace structure checks passed.** It
