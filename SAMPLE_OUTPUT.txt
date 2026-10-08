@@ -1,0 +1,40 @@
+Gen C Change and Recovery Experiment 0.2.1 — selected actual output
+Full scripted output: BEGINNER_EXERCISE_RESULTS.txt
+
+Application tests after the deliberate bug:
+Expected exit: 1; observed exit: 1
+Ran 7 tests
+FAILED (failures=4)
+
+Workspace checker during that same failure:
+Gen C AgentOS — workspace records
+Project: Fictional Word Counter
+Owner: Practice Operator
+Workspace structure checks passed.
+Application tests: not run. Run them separately; this report does not establish application behavior or deployment safety.
+
+PASS  Config schema and portable document paths
+PASS  Brief sections and safe file read
+PASS  Handoff sections and safe file read
+PASS  Recovery sections and safe file read
+PASS  Actions records and evidence paths
+PASS  Decisions records and evidence paths
+PASS  Corrections records and evidence paths
+PASS  Correction scope and supersession graph
+
+This checks structure and local references; it does not verify outcomes or evidence content.
+Next: read BRIEF.md and HANDOFF.md, resolve record issues, and run your project's tests.
+To check these records again:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+
+JSON scope fields from that check:
+{
+  "schema_version": 2,
+  "verification_scope": "workspace_structure",
+  "structure_status": "passed",
+  "application_tests": "not_run"
+}
+
+Scoped repair: 7 application tests pass; same-file help edit and separate notes preserved.
+RESULT: PASS -> EXPECTED FAIL -> RECOVERED PASS
+No human usability or demand result is claimed.

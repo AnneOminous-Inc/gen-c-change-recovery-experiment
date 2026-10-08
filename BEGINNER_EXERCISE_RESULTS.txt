@@ -1,0 +1,476 @@
+Gen C AgentOS beginner exercise — scripted evidence
+Python runtime: 3.9.6
+Scope: fictional local code and records; no network, account or dependency installation.
+Commands use portable relative paths from the stated working directory.
+Agent simulation is not human-user validation or a productivity result.
+
+## Dry run: inspect the scaffold before writing
+Working directory: .
+$ python3 genc-agentos.pyz init --dest 'records demo 简报' --demo --dry-run
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS 0.2.1
+Dry run — no files written.
+CREATE  agentos.json
+CREATE  BRIEF.md
+CREATE  ACTIONS.json
+CREATE  DECISIONS.json
+CREATE  CORRECTIONS.json
+CREATE  HANDOFF.md
+CREATE  RECOVERY.md
+CREATE  evidence/SMOKE.md
+Next: create the planned files with this command:
+python3 genc-agentos.pyz init --dest 'records demo 简报' --demo
+stderr:
+(empty)
+Verified: dry run wrote no files.
+
+## Create fictional records
+Working directory: .
+$ python3 genc-agentos.pyz init --dest 'records demo 简报' --demo
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS 0.2.1
+Creating opt-in workspace.
+CREATE  agentos.json
+CREATE  BRIEF.md
+CREATE  ACTIONS.json
+CREATE  DECISIONS.json
+CREATE  CORRECTIONS.json
+CREATE  HANDOFF.md
+CREATE  RECOVERY.md
+CREATE  evidence/SMOKE.md
+Next: check the workspace records with this command:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+The checker does not run or test your project. Read BRIEF.md and HANDOFF.md before editing.
+stderr:
+(empty)
+
+## Scripted fixture setup: scope the existing records to the actual project
+Copied the three allowlisted practice files inside the managed workspace.
+Updated existing config, brief, action, decision, correction, handoff and evidence records.
+Project: Fictional Word Counter; owner: Practice Operator.
+Scope: Fictional Word Counter / whitespace counting
+Local evidence links: practice/word-counter/counter.py, practice/word-counter/test_counter.py, practice/word-counter/CHANGE.md
+This setup is scripted; no human beginner completed these records.
+The packaged --demo remains the fictional notes example; no template mode was added.
+
+## Repeated init: occupied destination is refused
+Working directory: .
+$ python3 genc-agentos.pyz init --dest 'records demo 简报' --demo
+Expected exit: 2; observed exit: 2
+stdout:
+(empty)
+stderr:
+Error: destination is occupied; choose a new or empty directory (no overwrite)
+Verified: occupied directory contents are unchanged.
+
+## Baseline workspace structure check: passed
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报'
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS — workspace records
+Project: Fictional Word Counter
+Owner: Practice Operator
+Workspace structure checks passed.
+Application tests: not run. Run them separately; this report does not establish application behavior or deployment safety.
+
+PASS  Config schema and portable document paths
+PASS  Brief sections and safe file read
+PASS  Handoff sections and safe file read
+PASS  Recovery sections and safe file read
+PASS  Actions records and evidence paths
+PASS  Decisions records and evidence paths
+PASS  Corrections records and evidence paths
+PASS  Correction scope and supersession graph
+
+This checks structure and local references; it does not verify outcomes or evidence content.
+Next: read BRIEF.md and HANDOFF.md, resolve record issues, and run your project's tests.
+To check these records again:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+stderr:
+(empty)
+
+## Baseline workspace structure check: passed (JSON)
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报' --json
+Expected exit: 0; observed exit: 0
+stdout:
+{
+  "schema_version": 2,
+  "verification_scope": "workspace_structure",
+  "structure_status": "passed",
+  "application_tests": "not_run",
+  "project": "Fictional Word Counter",
+  "owner": "Practice Operator",
+  "checks": [
+    "Config schema and portable document paths",
+    "Brief sections and safe file read",
+    "Handoff sections and safe file read",
+    "Recovery sections and safe file read",
+    "Actions records and evidence paths",
+    "Decisions records and evidence paths",
+    "Corrections records and evidence paths",
+    "Correction scope and supersession graph"
+  ],
+  "issues": []
+}
+stderr:
+(empty)
+
+## Repeated workspace structure check is read only
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报'
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS — workspace records
+Project: Fictional Word Counter
+Owner: Practice Operator
+Workspace structure checks passed.
+Application tests: not run. Run them separately; this report does not establish application behavior or deployment safety.
+
+PASS  Config schema and portable document paths
+PASS  Brief sections and safe file read
+PASS  Handoff sections and safe file read
+PASS  Recovery sections and safe file read
+PASS  Actions records and evidence paths
+PASS  Decisions records and evidence paths
+PASS  Corrections records and evidence paths
+PASS  Correction scope and supersession graph
+
+This checks structure and local references; it does not verify outcomes or evidence content.
+Next: read BRIEF.md and HANDOFF.md, resolve record issues, and run your project's tests.
+To check these records again:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+stderr:
+(empty)
+
+## Repeated workspace structure check is read only (JSON)
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报' --json
+Expected exit: 0; observed exit: 0
+stdout:
+{
+  "schema_version": 2,
+  "verification_scope": "workspace_structure",
+  "structure_status": "passed",
+  "application_tests": "not_run",
+  "project": "Fictional Word Counter",
+  "owner": "Practice Operator",
+  "checks": [
+    "Config schema and portable document paths",
+    "Brief sections and safe file read",
+    "Handoff sections and safe file read",
+    "Recovery sections and safe file read",
+    "Actions records and evidence paths",
+    "Decisions records and evidence paths",
+    "Corrections records and evidence paths",
+    "Correction scope and supersession graph"
+  ],
+  "issues": []
+}
+stderr:
+(empty)
+
+## Working result before the change
+Working directory: records demo 简报/practice/word-counter
+$ python3 counter.py 'Small steps make progress'
+Expected exit: 0; observed exit: 0
+stdout:
+Words: 4
+stderr:
+(empty)
+
+## Project tests before the change: PASS
+Working directory: records demo 简报/practice/word-counter
+$ python3 -m unittest -v
+Expected exit: 0; observed exit: 0
+stdout:
+(empty)
+stderr:
+test_empty_text_has_no_words (test_counter.WordCounterTests) ... ok
+test_one_word (test_counter.WordCounterTests) ... ok
+test_punctuation_stays_inside_whitespace_delimited_words (test_counter.WordCounterTests) ... ok
+test_repeated_spaces_do_not_add_words (test_counter.WordCounterTests) ... ok
+test_surrounding_whitespace_does_not_add_words (test_counter.WordCounterTests) ... ok
+test_tabs_and_newlines_separate_words (test_counter.WordCounterTests) ... ok
+test_words_separated_by_single_spaces (test_counter.WordCounterTests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
+
+## Unrelated help edit before the regression
+Working directory: records demo 简报/practice/word-counter
+$ python3 counter.py --help
+Expected exit: 0; observed exit: 0
+stdout:
+usage: counter.py [-h] text
+
+Count words in your draft. Keep the whole phrase in quotes.
+
+positional arguments:
+  text        Text to count, for example "Small steps make progress"
+
+optional arguments:
+  -h, --help  show this help message and exit
+stderr:
+(empty)
+
+## Explain the one-line practice change before applying it
+Original: return len(text.split())
+Practice-only mistake: return len(text.split(" "))
+split() separates all whitespace and ignores empty groups. split(" ")
+separates only literal spaces and counts empty groups. Repeated spaces,
+empty text, tabs and newlines can now produce the wrong count.
+Backup: practice/word-counter/counter.py.before-practice (exclusive creation).
+Baseline SHA-256: 41f3d2a202bae745a3d31fd13323c1f46bd82a9cf21845f12830d0262ae98208
+Before-regression SHA-256: 7e8e8c8b634ebc6c938c2fc5797b359b183c066fb112a45e2f0d4a1b07c59df2
+Unrelated same-file edit: the help description now refers to a draft.
+Separate sentinel: practice/word-counter/OPERATOR_NOTES.md (exclusive creation).
+Operator-notes SHA-256: c6f24e6909bdc3cf18decfade71192ebdbc090b05c3059a4b33e4a6a8d25134f
+Practice-mistake SHA-256: 75d712696c900af64ea1bea59da2da4addb0d746aba230dc1865ca410c5ad271
+
+## Simple example still works despite the counting regression
+Working directory: records demo 简报/practice/word-counter
+$ python3 counter.py 'Small steps make progress'
+Expected exit: 0; observed exit: 0
+stdout:
+Words: 4
+stderr:
+(empty)
+Observed gap: this one successful input misses the whitespace regression.
+
+## Project tests after the deliberate safe mistake: EXPECTED FAIL
+Working directory: records demo 简报/practice/word-counter
+$ python3 -m unittest -v
+Expected exit: 1; observed exit: 1
+stdout:
+(empty)
+stderr:
+test_empty_text_has_no_words (test_counter.WordCounterTests) ... FAIL
+test_one_word (test_counter.WordCounterTests) ... ok
+test_punctuation_stays_inside_whitespace_delimited_words (test_counter.WordCounterTests) ... ok
+test_repeated_spaces_do_not_add_words (test_counter.WordCounterTests) ... FAIL
+test_surrounding_whitespace_does_not_add_words (test_counter.WordCounterTests) ... FAIL
+test_tabs_and_newlines_separate_words (test_counter.WordCounterTests) ... FAIL
+test_words_separated_by_single_spaces (test_counter.WordCounterTests) ... ok
+
+======================================================================
+FAIL: test_empty_text_has_no_words (test_counter.WordCounterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./records demo 简报/practice/word-counter/test_counter.py", line 10, in test_empty_text_has_no_words
+    self.assertEqual(count_words(""), 0)
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_repeated_spaces_do_not_add_words (test_counter.WordCounterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./records demo 简报/practice/word-counter/test_counter.py", line 19, in test_repeated_spaces_do_not_add_words
+    self.assertEqual(count_words("Small  steps   make progress"), 4)
+AssertionError: 7 != 4
+
+======================================================================
+FAIL: test_surrounding_whitespace_does_not_add_words (test_counter.WordCounterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./records demo 简报/practice/word-counter/test_counter.py", line 25, in test_surrounding_whitespace_does_not_add_words
+    self.assertEqual(count_words("  Small steps  "), 2)
+AssertionError: 6 != 2
+
+======================================================================
+FAIL: test_tabs_and_newlines_separate_words (test_counter.WordCounterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./records demo 简报/practice/word-counter/test_counter.py", line 22, in test_tabs_and_newlines_separate_words
+    self.assertEqual(count_words("Small\tsteps\nmake\r\nprogress"), 4)
+AssertionError: 1 != 4
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.014s
+
+FAILED (failures=4)
+
+## Workspace structure check while project tests fail: still passed
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报'
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS — workspace records
+Project: Fictional Word Counter
+Owner: Practice Operator
+Workspace structure checks passed.
+Application tests: not run. Run them separately; this report does not establish application behavior or deployment safety.
+
+PASS  Config schema and portable document paths
+PASS  Brief sections and safe file read
+PASS  Handoff sections and safe file read
+PASS  Recovery sections and safe file read
+PASS  Actions records and evidence paths
+PASS  Decisions records and evidence paths
+PASS  Corrections records and evidence paths
+PASS  Correction scope and supersession graph
+
+This checks structure and local references; it does not verify outcomes or evidence content.
+Next: read BRIEF.md and HANDOFF.md, resolve record issues, and run your project's tests.
+To check these records again:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+stderr:
+(empty)
+
+## Workspace structure check while project tests fail: still passed (JSON)
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报' --json
+Expected exit: 0; observed exit: 0
+stdout:
+{
+  "schema_version": 2,
+  "verification_scope": "workspace_structure",
+  "structure_status": "passed",
+  "application_tests": "not_run",
+  "project": "Fictional Word Counter",
+  "owner": "Practice Operator",
+  "checks": [
+    "Config schema and portable document paths",
+    "Brief sections and safe file read",
+    "Handoff sections and safe file read",
+    "Recovery sections and safe file read",
+    "Actions records and evidence paths",
+    "Decisions records and evidence paths",
+    "Corrections records and evidence paths",
+    "Correction scope and supersession graph"
+  ],
+  "issues": []
+}
+stderr:
+(empty)
+Explicit counterexample: application tests failed while structure_status=passed.
+The checker reports verification_scope=workspace_structure and application_tests=not_run.
+The runner ran application tests separately; passing structure checks do not prove project code works.
+
+## Preview a full-file restore — do not apply it
+Candidate: replace counter.py with the baseline backup's bytes.
+This would change the help description back to:
+Count words separated by whitespace. Put your text in quotes.
+It would erase the intended same-file edit:
+Count words in your draft. Keep the whole phrase in quotes.
+Decision: full-file restore rejected; preview only, no restoration applied.
+
+## Recover only the copied counter.py
+Replaced only the exact known faulty count_words return line with the original line.
+Recovered bytes match the before-regression state, including the unrelated help edit.
+Verified: OPERATOR_NOTES.md and the same-file help edit are preserved.
+Kept practice/word-counter/counter.py.practice-bad inside the temporary workspace.
+Recovered SHA-256: 7e8e8c8b634ebc6c938c2fc5797b359b183c066fb112a45e2f0d4a1b07c59df2
+
+## Project tests after bounded recovery: PASS
+Working directory: records demo 简报/practice/word-counter
+$ python3 -m unittest -v
+Expected exit: 0; observed exit: 0
+stdout:
+(empty)
+stderr:
+test_empty_text_has_no_words (test_counter.WordCounterTests) ... ok
+test_one_word (test_counter.WordCounterTests) ... ok
+test_punctuation_stays_inside_whitespace_delimited_words (test_counter.WordCounterTests) ... ok
+test_repeated_spaces_do_not_add_words (test_counter.WordCounterTests) ... ok
+test_surrounding_whitespace_does_not_add_words (test_counter.WordCounterTests) ... ok
+test_tabs_and_newlines_separate_words (test_counter.WordCounterTests) ... ok
+test_words_separated_by_single_spaces (test_counter.WordCounterTests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.002s
+
+OK
+
+## Working result after recovery
+Working directory: records demo 简报/practice/word-counter
+$ python3 counter.py 'Small steps make progress'
+Expected exit: 0; observed exit: 0
+stdout:
+Words: 4
+stderr:
+(empty)
+
+## Unrelated help edit after recovery
+Working directory: records demo 简报/practice/word-counter
+$ python3 counter.py --help
+Expected exit: 0; observed exit: 0
+stdout:
+usage: counter.py [-h] text
+
+Count words in your draft. Keep the whole phrase in quotes.
+
+positional arguments:
+  text        Text to count, for example "Small steps make progress"
+
+optional arguments:
+  -h, --help  show this help message and exit
+stderr:
+(empty)
+
+## Final workspace structure check
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报'
+Expected exit: 0; observed exit: 0
+stdout:
+Gen C AgentOS — workspace records
+Project: Fictional Word Counter
+Owner: Practice Operator
+Workspace structure checks passed.
+Application tests: not run. Run them separately; this report does not establish application behavior or deployment safety.
+
+PASS  Config schema and portable document paths
+PASS  Brief sections and safe file read
+PASS  Handoff sections and safe file read
+PASS  Recovery sections and safe file read
+PASS  Actions records and evidence paths
+PASS  Decisions records and evidence paths
+PASS  Corrections records and evidence paths
+PASS  Correction scope and supersession graph
+
+This checks structure and local references; it does not verify outcomes or evidence content.
+Next: read BRIEF.md and HANDOFF.md, resolve record issues, and run your project's tests.
+To check these records again:
+python3 genc-agentos.pyz check --dest 'records demo 简报'
+stderr:
+(empty)
+
+## Final workspace structure check (JSON)
+Working directory: .
+$ python3 genc-agentos.pyz check --dest 'records demo 简报' --json
+Expected exit: 0; observed exit: 0
+stdout:
+{
+  "schema_version": 2,
+  "verification_scope": "workspace_structure",
+  "structure_status": "passed",
+  "application_tests": "not_run",
+  "project": "Fictional Word Counter",
+  "owner": "Practice Operator",
+  "checks": [
+    "Config schema and portable document paths",
+    "Brief sections and safe file read",
+    "Handoff sections and safe file read",
+    "Recovery sections and safe file read",
+    "Actions records and evidence paths",
+    "Decisions records and evidence paths",
+    "Corrections records and evidence paths",
+    "Correction scope and supersession graph"
+  ],
+  "issues": []
+}
+stderr:
+(empty)
+
+RESULT: PASS -> EXPECTED FAIL -> RECOVERED PASS
+Verified: dry run, occupied/repeated init, repeated read-only checks,
+real counter output, expected failing assertions and limited recovery
+that preserves the unrelated same-file edit and separate operator notes.
+All modified copies, backup and failed-version artifacts lived only in the
+fresh temporary workspace; it is removed when this scripted run exits.
+The original practice files were not modified. No human user was observed.

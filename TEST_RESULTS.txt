@@ -1,0 +1,55 @@
+Gen C Change and Recovery Experiment 0.2.1 — actual verification
+Runtime: Python 3.9.6 (macOS)
+Command: python3 -m unittest discover -s tests -v
+Earlier run: exceeded the 90-second aggregate runner limit; no passing result claimed.
+Current completed run follows:
+
+test_clean_packaged_exercise_records_pass_failure_and_recovery (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_existing_record_is_refused_and_preserved (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_missing_symlink_or_non_zipapp_inputs_are_refused (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_repeated_invocations_use_fresh_copies_and_do_not_overwrite_record (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_symlink_record_and_symlink_parent_are_refused (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_traversal_and_missing_record_parent_are_refused (test_beginner_exercise.BeginnerExerciseTests) ... ok
+test_bounded_file_reads_reject_oversized_config_and_markdown (test_cli.AgentOSCLITests) ... ok
+test_config_symlink_and_nonregular_document_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_config_types_missing_fields_and_schema_version_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_correction_cycle_is_rejected (test_cli.AgentOSCLITests) ... ok
+test_correction_scope_mismatch_nonreciprocal_and_active_successor_rejected (test_cli.AgentOSCLITests) ... ok
+test_default_templates_have_actionable_structure_gaps (test_cli.AgentOSCLITests) ... ok
+test_destination_lexical_traversal_is_rejected (test_cli.AgentOSCLITests) ... ok
+test_document_symlink_ancestor_is_rejected (test_cli.AgentOSCLITests) ... ok
+test_document_symlink_is_rejected_even_if_target_is_inside_workspace (test_cli.AgentOSCLITests) ... ok
+test_dry_run_creates_neither_destination_nor_files (test_cli.AgentOSCLITests) ... ok
+test_duplicate_json_register_keys_and_invalid_records_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_empty_corrections_and_valid_reciprocal_supersession_pass_structure_checks (test_cli.AgentOSCLITests) ... ok
+test_empty_directory_and_relative_unicode_destination (test_cli.AgentOSCLITests) ... ok
+test_empty_or_control_character_destination_is_rejected (test_cli.AgentOSCLITests) ... ok
+test_evidence_fragment_and_https_reference_are_handled_without_fetch (test_cli.AgentOSCLITests) ... ok
+test_evidence_path_boundaries_and_unsafe_urls_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_evidence_symlink_and_symlink_ancestor_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_fictional_demo_passes_structure_checks_and_report_states_scope (test_cli.AgentOSCLITests) ... ok
+test_invalid_utf8_is_a_clear_error (test_cli.AgentOSCLITests) ... ok
+test_malformed_and_duplicate_json_config_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_managed_document_paths_must_be_portable_and_unique (test_cli.AgentOSCLITests) ... ok
+test_missing_evidence_is_an_error_and_empty_evidence_is_a_warning (test_cli.AgentOSCLITests) ... ok
+test_missing_or_file_parent_is_rejected_without_writes (test_cli.AgentOSCLITests) ... ok
+test_nested_space_and_unicode_document_path_is_supported (test_cli.AgentOSCLITests) ... ok
+test_no_next_action_or_decision_is_a_structure_gap (test_cli.AgentOSCLITests) ... ok
+test_nonregular_evidence_is_rejected (test_cli.AgentOSCLITests) ... ok
+test_occupied_directory_refuses_init_and_preserves_data (test_cli.AgentOSCLITests) ... ok
+test_register_roots_must_be_arrays (test_cli.AgentOSCLITests) ... ok
+test_repeated_init_refuses_and_repeated_check_is_read_only (test_cli.AgentOSCLITests) ... ok
+test_symlink_destination_and_ancestor_are_rejected (test_cli.AgentOSCLITests) ... ok
+test_unrelated_symlink_is_ignored (test_cli.AgentOSCLITests) ... ok
+test_version_and_required_destination (test_cli.AgentOSCLITests) ... ok
+test_packaged_follow_up_commands_execute_from_the_same_folder (test_next_commands.FollowUpCommandsTests) ... ok
+test_windows_command_quotes_powershell_arguments_without_expansion (test_next_commands.FollowUpCommandsTests) ... ok
+test_public_zip_contains_only_allowlisted_deliverables_and_license (test_release.StandaloneReleaseTests) ... ok
+test_zipapp_is_independent_and_forwards_all_exit_codes (test_release.StandaloneReleaseTests) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 125.948s
+
+OK
+
+Exit code: 0
